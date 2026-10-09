@@ -1,0 +1,80 @@
+# Vocabulary of audio structures and difference types in AT-DIFFER, and how
+# difference types map to the type names the model writes on its TYPES line.
+#
+# This file holds the values used in the paper's experiments and is shared by
+# the dataset, finetune, and evaluation stages. Do not edit it.
+
+# Values of the `audio_structure` column in the metadata, in the order of
+# Section 3.2 of the paper.
+audio_structures: [single, simultaneous, sequential]
+
+# Values that elements of the `difference_types` column in the metadata can
+# take, in the order of Section 3.2 of the paper. Evaluation tables use this
+# order for their rows and columns.
+difference_types:
+  - no_difference
+  - semantic_difference
+  - text_omission
+  - sound_omission
+  - sequential_discrepancy
+  - simultaneity_discrepancy
+
+# Type names the model writes on the TYPES line. They are fixed by
+# resources/prompt.txt and kept as used in the experiments. The list order is
+# the order in which the names appear on the TYPES line.
+output_types:
+  - event_omission
+  - phantom_sound
+  - swapped_order
+  - overlap
+
+# Each difference type expressed as output type names. A semantic difference
+# is expressed as a text omission plus a sound omission (Figure 4 of the
+# paper); no difference maps to no output type.
+difference_type_to_output_types:
+  no_difference: []
+  semantic_difference: [event_omission, phantom_sound]
+  text_omission: [event_omission]
+  sound_omission: [phantom_sound]
+  sequential_discrepancy: [swapped_order]
+  simultaneity_discrepancy: [overlap]
+
+# Combinations of difference types that occur in AT-DIFFER for each audio
+# structure (29 in total). Combinations are listed from fewer to more
+# difference types, then in the order of `difference_types`; types within a
+# combination also follow that order. A type may appear twice in one
+# combination: e.g. [text_omission, text_omission] means that both of the two
+# sounds are omitted from the text.
+valid_combinations:
+  single:
+    - [no_difference]
+    - [semantic_difference]
+    - [text_omission]
+    - [sound_omission]
+    - [semantic_difference, sound_omission]
+    - [sound_omission, sound_omission]
+  simultaneous:
+    - [no_difference]
+    - [semantic_difference]
+    - [text_omission]
+    - [sound_omission]
+    - [simultaneity_discrepancy]
+    - [semantic_difference, semantic_difference]
+    - [semantic_difference, text_omission]
+    - [semantic_difference, simultaneity_discrepancy]
+    - [text_omission, text_omission]
+    - [sound_omission, simultaneity_discrepancy]
+  sequential:
+    - [no_difference]
+    - [semantic_difference]
+    - [text_omission]
+    - [sound_omission]
+    - [sequential_discrepancy]
+    - [simultaneity_discrepancy]
+    - [semantic_difference, semantic_difference]
+    - [semantic_difference, text_omission]
+    - [semantic_difference, sequential_discrepancy]
+    - [semantic_difference, simultaneity_discrepancy]
+    - [text_omission, text_omission]
+    - [sound_omission, sequential_discrepancy]
+    - [sound_omission, simultaneity_discrepancy]

@@ -1,0 +1,29 @@
+# Format of the three-line model output, as specified in resources/prompt.txt.
+#
+# The output consists of three lines, each of the form "<key>: <value>", joined
+# by "\n" with no trailing newline:
+#
+#   DISCREPANCY: 1
+#   TYPES: event_omission, phantom_sound
+#   EXPLANATION: The caption mistakes the sound of rain for the sound of applause.
+#
+# This file holds the values used in the paper's experiments and is shared by
+# the finetune and evaluation stages. Do not edit it.
+
+# Line keys, in output order.
+keys: [DISCREPANCY, TYPES, EXPLANATION]
+
+# Value of the DISCREPANCY line.
+discrepancy:
+  with_difference: "1"  # the text differs from the audio
+  no_difference: "0"    # the difference types are [no_difference]
+
+# Value of the TYPES line: the applicable output types (taxonomy.yaml), joined
+# by `separator` in the order of `output_types`, or `none` if there are none.
+types:
+  separator: ", "
+  none: none
+
+# Value of the EXPLANATION line when there is no difference. Otherwise the line
+# holds the difference caption (one sentence).
+no_difference_explanation: The caption accurately describes the audio.

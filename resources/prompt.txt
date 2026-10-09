@@ -1,0 +1,90 @@
+You will be given an audio recording and a caption that was written to describe it.
+Your task is to compare the audio with the caption and determine whether the caption conflicts with the actual content of the audio.
+
+=== DISCREPANCY TYPES ===
+
+A discrepancy, if any, falls into one or more of the following four types. Use these exact type names:
+
+- event_omission: A sound event that IS present in the audio is missing from the caption.
+- phantom_sound: The caption mentions a sound event that is NOT present in the audio.
+- swapped_order: The caption places a sound at the wrong point of the sequence (e.g. it says A comes before B when B actually comes first, or it puts a sound after another sound when that sound is in fact the first thing you hear). This applies to sounds the caption identifies correctly, and it can happen even when the caption also misnames or leaves out other sounds.
+- overlap: The caption misstates whether events happen at the same time (e.g. it describes events as happening one after another when they actually overlap, or as simultaneous/overlapping when they actually occur one after another).
+
+There is NO type for "the caption names the wrong sound". A substitution is not a single mistake: it is one missing event plus one invented event. If the audio contains sound X and the caption instead names sound Y in its place, report BOTH event_omission (X is present in the audio but missing from the caption) AND phantom_sound (Y is named in the caption but absent from the audio).
+
+Presence rules (apply these literally):
+- An event that exists ONLY on the audio side (present in the audio, absent from the caption) => event_omission.
+- An event that exists ONLY on the caption side (present in the caption, absent from the audio) => phantom_sound.
+- These two are independent judgements. Either one, both, or neither may apply to a single caption.
+- swapped_order and overlap are about WHERE events sit in time, so they are anchored on events that exist on BOTH sides. Never report the position of a missing or invented event as a mistake of its own; report the position of the correctly identified events.
+
+Identity and structure are judged INDEPENDENTLY (see Step 3):
+- Which sounds are there (event_omission, phantom_sound) and how the sounds are arranged in time (swapped_order, overlap) are two separate questions. Answer both, every time.
+- Finding a wrong or missing sound does NOT exempt you from the arrangement question, and a correct set of sounds does NOT exempt you from it either.
+- But an arrangement difference that is purely the CONSEQUENCE of a sound the caption leaves out is not a separate mistake: the caption stays silent about that sound, and silence cannot be a wrong claim.
+
+=== HOW TO ANALYZE ===
+
+Work through the following steps before you answer. Do this reasoning internally; it must not appear in your final answer.
+
+Step 1. Detect the sound events in the audio.
+Listen to the whole recording and build a list of every distinct sound event you can hear, each with what the source is and its approximate start and end time.
+- Listen to the audio on its own terms. You may use the caption as a hint about what to listen for, but a sound counts as present ONLY if you can actually hear it, and an event you hear counts as present even if the caption never mentions it. Never let the caption add an event to this list, and never let the caption remove one from it.
+- Be deliberate about simultaneity. Several sources can be audible at the same instant, and a continuous or background sound (rain, wind, an engine, running water, a crowd, music) can run underneath shorter foreground events for the whole recording. Do not assume the events are neatly sequential just because the caption presents them that way.
+- Check the boundaries of each event: an event may start before the previous one has ended (partial overlap), or be entirely contained inside a longer one.
+- Scan the timeline for stretches where more than one source is audible at once, and confirm how many distinct sources are sounding in each stretch. A quiet or steady sound behind a louder one is still a separate event.
+
+Step 2. Extract the event structure asserted by the caption.
+From the caption alone, list the sound events it claims, and the temporal relations it claims between them: order words ("then", "after", "followed by", "before"), simultaneity words ("while", "as", "during", "at the same time", "over", "in the background"), or no stated relation at all.
+
+Step 3. Match the two structures and reason about the differences. Run the two checks below separately, in order, and let each one reach its own conclusion.
+
+Check 1 - Identity: are the same sounds on both sides?
+- Match caption events to audio events by what the sound source actually is, not by the wording.
+- Every audio event with no caption counterpart => event_omission. Every caption event with no audio counterpart => phantom_sound. A mismatched pair (the caption names a different source in the same slot) is not a match: it produces one of each.
+
+Check 2 - Structure: are the sounds arranged in time the way the caption says?
+Do this check even if Check 1 already found something, and base it on the events the caption identifies CORRECTLY (the ones present on both sides). For each such event, take the position the caption gives it within the whole sequence it describes - which sounds the caption puts before it, which after it, which at the same time as it - counting every sound the caption asserts, including the ones you judged to be phantom. Compare that with where the event actually sits among the sounds you heard.
+- The caption puts a correctly identified event at a different point of the sequence than it actually occupies (e.g. the caption has another sound before it, but in the audio it is the first sound; or the caption has it last, but in the audio another sound follows it) => swapped_order.
+- The caption and the audio disagree about whether events are simultaneous (one says overlapping, the other says one-after-another) => overlap.
+- When events genuinely overlap in the audio, the mistake is overlap, not swapped_order: simultaneous events have no order to reverse.
+- Exception - a caption that simply says less: if the caption mentions fewer sounds and the sounds it does mention are still in their correct relative order, there is NO swapped_order. Leaving a sound out inevitably changes the shape of the sequence, and that shift is already reported as event_omission.
+- With three or more events, different pairs may each contribute their own type; report every type that applies.
+
+Worked examples of the two checks (A, B, C stand for distinct sound sources):
+- Audio: A then B. Caption: "C then A". Check 1: B is missing and C is invented (C stands where B should be). Check 2: the caption puts a sound before A, but in the audio A is the first thing you hear, so A is placed at the wrong point of the sequence. => event_omission, phantom_sound, swapped_order
+- Audio: A then B. Caption: "A". Check 1: B is missing. Check 2: the caption mentions one sound and puts A first, which is where A actually is; the caption makes no claim about anything after it. => event_omission
+- Audio: A then B. Caption: "C then B". Check 1: A is missing and C is invented. Check 2: the caption puts B after one other sound, and in the audio B is likewise the second sound, so B's position is right. => event_omission, phantom_sound
+- Audio: A then B. Caption: "A and B at the same time". Check 1: both sounds are correct. Check 2: the caption claims simultaneity that does not exist. => overlap
+
+If nothing in the caption conflicts with the audio, there is no discrepancy. Wording that is merely vaguer or more general than the audio (without contradicting it) is not a discrepancy.
+
+=== OUTPUT FORMAT ===
+
+Output your answer in English using EXACTLY the following three lines and nothing else:
+
+DISCREPANCY: <1 if there is any discrepancy, 0 if the caption accurately describes the audio>
+TYPES: <comma-separated list of the applicable type names; use "none" if DISCREPANCY is 0>
+EXPLANATION: <exactly one sentence>
+
+Rules for each line:
+- DISCREPANCY must be exactly "1" or "0".
+- TYPES must contain only these type names: event_omission, phantom_sound, swapped_order, overlap. Separate them with ", " and list them in that same fixed order. Include every type that applies (multiple are allowed). Write "none" when DISCREPANCY is 0. Never write semantic_mismatch or any other name.
+- EXPLANATION must be a single sentence. If DISCREPANCY is 1, it must state both what kind of mistake the caption makes and specifically where the caption differs from the audio. If DISCREPANCY is 0, write "The caption accurately describes the audio."
+
+Write the EXPLANATION sentence in the style of these examples:
+
+- The caption mistakes the sound of rain for the sound of applause.
+- The caption reverses the order of footsteps on gravel and a door slam.
+- The caption adds the sound of seagulls that is not actually there and reverses the order of a bicycle bell and an idling bus engine.
+
+Follow that style closely:
+- Begin the sentence with "The caption" and use the present tense.
+- Name the concrete sounds involved, as in the examples ("the sound of rain", "a door slam"), rather than referring to them abstractly.
+- Describe the mistake in plain words ("mistakes A for B", "reverses the order of A and B", "adds A that is not actually there", "omits A", "puts A after B when A is actually the first sound", "says A and B happen at the same time when A ends before B begins"). Do not use the type names from the TYPES line in the sentence, and do not give timestamps.
+- When the caption makes more than one mistake, join them with "and" in a single sentence, as in the third example.
+- Note that "mistakes A for B" describes a substitution, which is still reported as both event_omission and phantom_sound on the TYPES line.
+
+Output only these three lines and nothing else.
+
+Caption: {caption}
