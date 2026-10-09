@@ -1,0 +1,28 @@
+[project]
+name = "at-differ-dataset"
+version = "1.0.0"
+description = "Re-render the AT-DIFFER dataset from the bundled metadata and FSD50K audio."
+readme = "README.md"
+# The versions below are the ones with which the re-rendered audio was verified
+# to be bit-identical to the paper's dataset. Do not change them.
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "numpy==1.26.4",
+    "soundfile==0.14.0",
+    "soxr==1.1.0",
+    "pandas>=2.0",
+    "tqdm>=4.0",
+]
+
+[project.scripts]
+at-differ-dataset = "at_differ_dataset.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.24,<0.13"]
+build-backend = "uv_build"
