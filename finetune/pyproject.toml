@@ -1,0 +1,38 @@
+[project]
+name = "at-differ-finetune"
+version = "1.0.0"
+description = "LoRA fine-tuning of Qwen3-Omni on AT-DIFFER (Methods 1-3 of the paper)."
+# The versions below are the ones used for the paper's training runs.
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch==2.11.0",
+    "transformers==4.57.3",
+    "peft==0.20.0",
+    "accelerate==1.12.0",
+    "librosa==0.11.0",
+    "soundfile==0.14.0",
+    "numpy==2.4.6",
+    "pyyaml==6.0.3",
+]
+
+[project.scripts]
+at-differ-finetune = "at_differ_finetune.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+# On Linux, torch is the CUDA 13.0 build used for the paper. On other
+# platforms (e.g. macOS, for running the tests), it is the CPU build from PyPI.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu130", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[build-system]
+requires = ["uv_build>=0.12.24,<0.13"]
+build-backend = "uv_build"

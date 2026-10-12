@@ -1,0 +1,56 @@
+# Method 2: supervise all three lines, averaged together.
+# Training conditions of the paper (from its train_config.json). The three
+# configs differ only in supervised_lines, loss_reduction, and output_dir.
+#
+# Run from finetune/:
+#   uv run torchrun --nproc_per_node 2 -m at_differ_finetune.train --config configs/method2.yaml
+
+# --- Inputs (made by `at-differ-finetune prepare`) ---
+train_manifest: ../outputs/finetune/manifests/train.jsonl
+eval_manifest: ../outputs/finetune/manifests/eval.jsonl
+prompt_file: ../resources/prompt.txt
+taxonomy_file: ../resources/taxonomy.yaml
+output_format_file: ../resources/output_format.yaml
+
+# --- Model ---
+model: qwen3-omni
+# Base model downloaded as described in README.md.
+model_path: ../outputs/models/Qwen3-Omni-30B-A3B-Thinking
+attn_implementation: sdpa
+# Audio longer than this is truncated.
+max_audio_seconds: 40.0
+
+# --- LoRA (attention projections of the LLM only) ---
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+
+# --- Loss ---
+supervised_lines: [discrepancy, types, explanation]
+# All supervised tokens are averaged together, so the share of each line
+# follows its number of tokens.
+loss_reduction: concatenate
+# Empty: all supervised lines have weight 1.
+line_weights: {}
+
+# --- Training ---
+output_dir: ../outputs/finetune/method2
+num_train_epochs: 1.0
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+# 2 GPUs x 1 x 16 = effective batch size 32
+gradient_accumulation_steps: 16
+learning_rate: 1.0e-4
+warmup_ratio: 0.03
+lr_scheduler_type: cosine
+weight_decay: 0.0
+max_grad_norm: 1.0
+logging_steps: 10
+save_steps: 250
+eval_steps: 250
+seed: 0
+gradient_checkpointing: true
+group_by_length: true
+ddp_find_unused_parameters: false
+dataloader_num_workers: 4
+resume_from_checkpoint: null
