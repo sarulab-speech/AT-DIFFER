@@ -1,0 +1,50 @@
+[project]
+name = "at-differ-inference"
+version = "1.0.0"
+description = "Inference of Qwen3-Omni on AT-DIFFER (the Baseline and Methods 1-3 of the paper)."
+# The versions below are the ones used for the paper's inference runs.
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch==2.11.0",
+    "torchvision==0.26.0",
+    "torchaudio==2.11.0",
+    "vllm==0.23.0",
+    "flashinfer-python==0.6.12",
+    "flashinfer-cubin==0.6.12",
+    "transformers==4.57.3",
+    "qwen-omni-utils==0.0.9",
+    "librosa==0.11.0",
+    "static-ffmpeg==3.0",
+    "decord==0.6.0",
+    "pyyaml==6.0.3",
+]
+
+[project.scripts]
+at-differ-inference = "at_differ_inference.cli:main"
+
+[tool.uv]
+# vLLM has wheels only for Linux, and decord only for Linux x86_64, the
+# platform of the paper's runs.
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+# The environment of the paper's runs had these versions, although they do not
+# satisfy the requirements declared by vLLM 0.23.0 (numba==0.65.0) and
+# mistral-common 1.11.3 (numpy<2.4).
+override-dependencies = [
+    "numpy==2.4.6",
+    "numba==0.65.1",
+]
+
+# torch, torchvision, and torchaudio are the CUDA 13.0 builds used for the paper.
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+torchvision = { index = "pytorch-cu130" }
+torchaudio = { index = "pytorch-cu130" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[build-system]
+requires = ["uv_build>=0.12.24,<0.13"]
+build-backend = "uv_build"
