@@ -2,6 +2,7 @@
 name = "at-differ-inference"
 version = "1.0.0"
 description = "Inference of Qwen3-Omni on AT-DIFFER (the Baseline and Methods 1-3 of the paper)."
+readme = "README.md"
 # The versions below are the ones used for the paper's inference runs.
 requires-python = ">=3.12,<3.13"
 dependencies = [

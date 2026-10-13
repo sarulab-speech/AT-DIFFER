@@ -3,7 +3,8 @@
 This directory fine-tunes
 [Qwen3-Omni-30B-A3B-Thinking](https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Thinking)
 on AT-DIFFER with LoRA, as in Methods 1–3 of the paper, and merges the trained
-adapter into the base model so that the inference stage can load it.
+adapter into the base model so that the
+[inference stage](../inference/README.md) can load it.
 
 For each audio–text pair, the model receives the audio and the prompt
 [`../resources/prompt.txt`](../resources/prompt.txt) with the text inserted,
