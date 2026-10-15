@@ -14,6 +14,10 @@ dependencies = [
     "soundfile==0.14.0",
     "numpy==2.4.6",
     "pyyaml==6.0.3",
+    # Not imported by this package, but Qwen3OmniMoeProcessor.from_pretrained
+    # also loads the image and video processors, which need them.
+    "pillow==12.2.0",
+    "torchvision==0.26.0",
 ]
 
 [project.scripts]
@@ -24,10 +28,12 @@ dev = [
     "pytest>=8.0",
 ]
 
-# On Linux, torch is the CUDA 13.0 build used for the paper. On other
-# platforms (e.g. macOS, for running the tests), it is the CPU build from PyPI.
+# On Linux, torch and torchvision are the CUDA 13.0 builds used for the paper.
+# On other platforms (e.g. macOS, for running the tests), they are the CPU
+# builds from PyPI.
 [tool.uv.sources]
 torch = [{ index = "pytorch-cu130", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cu130", marker = "sys_platform == 'linux'" }]
 
 [[tool.uv.index]]
 name = "pytorch-cu130"

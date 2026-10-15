@@ -58,6 +58,27 @@ def test_trainer_overrides_both_samplers():
         assert name in cls.__dict__, f"{name} is not overridden"
 
 
+def test_processor_components_are_usable():
+    """Every component of the Qwen3-Omni processor has its dependencies installed.
+
+    Qwen3OmniMoeProcessor.from_pretrained also loads the image and video
+    processors, although only audio is used. They need Pillow and torchvision,
+    which transformers does not install, so without them training and merging
+    fail as soon as they load the processor.
+    """
+    import transformers
+    from transformers import Qwen3OmniMoeProcessor
+
+    for attribute in Qwen3OmniMoeProcessor.attributes:
+        class_names = getattr(Qwen3OmniMoeProcessor, f"{attribute}_class")
+        if isinstance(class_names, str):
+            class_names = (class_names,)
+        for class_name in class_names:
+            # A class whose dependencies are missing is a placeholder that
+            # raises ImportError on attribute access.
+            getattr(getattr(transformers, class_name), "from_pretrained")
+
+
 def test_slurm_scripts_use_a_unique_rendezvous_port():
     """Every torchrun in the Slurm examples gets a port of its own.
 
