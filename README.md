@@ -9,15 +9,17 @@ With it, you can rebuild the AT-DIFFER dataset used in the paper, fine-tune
 on it (Methods 1–3), and run the Baseline and the fine-tuned models on its
 test split.
 
+<p align="center">
+  <img src="assets/overview.png" width="560" alt="Overview of audio–text difference captioning: given audio of an electric guitar followed by female singing and the text &quot;the sound of tambourine followed by the sound of female singing&quot;, the captioner outputs &quot;The caption mistakes the sound of electric guitar for the sound of tambourine.&quot;">
+</p>
+
 ## Task: audio–text difference captioning
 
 Audio–text difference captioning is the task of generating a caption that
 describes how a text differs from the audio it is paired with, instead of
-rating their agreement with a single score. For example:
-
-| Audio | Text | Difference caption |
-|---|---|---|
-| Electric guitar, then female singing | the sound of tambourine followed by the sound of female singing | The caption mistakes the sound of electric guitar for the sound of tambourine. |
+rating their agreement with a single score. In the example above, the text
+names a tambourine where the audio has an electric guitar, and the difference
+caption states this.
 
 The models in this repository solve three tasks in one response: difference
 detection (whether the audio and the text differ), difference type
@@ -78,6 +80,7 @@ to that used in the paper.
 
 ```
 AT-DIFFER/
+├── assets/      # Images for this README
 ├── resources/   # Prompt, label vocabulary, and output format shared by the stages
 ├── dataset/     # Re-renders AT-DIFFER from the bundled metadata and FSD50K audio
 ├── finetune/    # LoRA fine-tuning of Qwen3-Omni (Methods 1–3) and merging of the adapter
