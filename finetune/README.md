@@ -16,6 +16,11 @@ TYPES: event_omission, phantom_sound
 EXPLANATION: The caption mistakes the sound of rain for the sound of applause.
 ```
 
+The type names on the TYPES line are those of the prompt, which differ from
+the names of the difference types in the paper and the metadata. See
+[Dataset](../README.md#dataset) in the top-level README for how they
+correspond.
+
 LoRA is applied to the query, key, value, and output projections of the
 self-attention layers of the language model. The audio encoder and the
 Mixture-of-Experts feed-forward layers are frozen.

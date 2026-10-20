@@ -33,6 +33,9 @@ TYPES: event_omission
 EXPLANATION: The caption leaves out the sound of screaming that is actually present.
 ```
 
+The TYPES line uses the type names of the prompt, which differ from the names
+of the difference types in the paper (see [Dataset](#dataset)).
+
 ## Dataset
 
 AT-DIFFER consists of audio–text pairs with systematically simulated
@@ -60,6 +63,25 @@ describes the audio."):
 | Sound omission | A sound event in the text is absent from the audio. | The caption adds the sound of [nonexistent event] that is not actually there. |
 | Sequential discrepancy | The order of two sequential sound events is reversed in the text. | The caption reverses the order of [event A] and [event B]. |
 | Simultaneity discrepancy | The text describes sequential sound events as simultaneous, or the reverse. | The caption describes the sequential [event A] and [event B] as overlapping. / The caption describes the simultaneous [event A] and [event B] as sequential. |
+
+The prompt and the output format are kept exactly as in the paper's
+experiments, so they use names that differ from those in the paper and in the
+dataset metadata. The prompt calls the text "caption", as the difference
+captions do, and the TYPES line uses the following type names:
+
+| Difference type | Type names on the TYPES line |
+|---|---|
+| Semantic difference | `event_omission` and `phantom_sound` |
+| Text omission | `event_omission` |
+| Sound omission | `phantom_sound` |
+| Sequential discrepancy | `swapped_order` |
+| Simultaneity discrepancy | `overlap` |
+
+A semantic difference has no type name of its own: the text misses the sound
+event in the audio and names one that is absent from it, so it is written as
+both `event_omission` and `phantom_sound`. A pair with no difference has
+`DISCREPANCY: 0` and `TYPES: none`. This mapping is defined in
+[`resources/taxonomy.yaml`](resources/taxonomy.yaml).
 
 The splits follow those of FSD50K: train and val are made from the FSD50K dev
 set, and test from the FSD50K eval set.

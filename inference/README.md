@@ -16,6 +16,11 @@ TYPES: event_omission, phantom_sound
 EXPLANATION: The caption mistakes the sound of rain for the sound of applause.
 ```
 
+The type names on the TYPES line are those of the prompt, which differ from
+the names of the difference types in the paper and the metadata. See
+[Dataset](../README.md#dataset) in the top-level README for how they
+correspond.
+
 ## Models
 
 The model is chosen with `--model` and `--model-path`:
