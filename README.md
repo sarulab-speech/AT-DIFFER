@@ -40,9 +40,19 @@ of the difference types in the paper (see [Dataset](#dataset)).
 
 AT-DIFFER consists of audio–text pairs with systematically simulated
 differences, each with a reference difference caption. The audio is made from
-clips of FSD50K-Solo, the subset of [FSD50K](https://zenodo.org/records/4060432)
-whose clips contain a single sound event. The texts and difference captions
-are made from templates filled with the FSD50K labels of the clips.
+clips of FSD50K-Solo [[1]](#references), the subset of
+[FSD50K](https://zenodo.org/records/4060432) [[2]](#references) whose clips
+contain a single sound event. As shown below, six different combinations of
+an audio structure and difference types are chosen at random from the valid
+ones for each clip (N = 6 in the figure), and a pair is made for each of them.
+A simultaneous or sequential pair uses a second clip, also chosen at random.
+The texts and difference captions are made from templates filled with FSD50K
+labels: those of the clips and, for a semantic difference or a sound omission,
+the label of a sound event absent from the audio, chosen at random.
+
+<p align="center">
+  <img src="assets/data_creation.png" width="560" alt="Procedure for creating AT-DIFFER: select one clip from the pool of audio clips in order; choose an audio structure (e.g., Sequential) and difference types (e.g., Text omission) at random from predefined valid combinations; create the audio, the text, and the difference caption according to them, adding an extra audio clip if necessary. The last two steps are repeated N times per clip.">
+</p>
 
 Each pair has one of three **audio structures**:
 
@@ -150,9 +160,17 @@ Edition GPUs (96 GB each).
 
 ## Usage
 
-Run the stages in order. The commands below are for the Baseline and
-Method 2. The README of each stage describes all options, the outputs, and
-example Slurm job scripts (`scripts/slurm/`).
+First, clone this repository:
+
+```bash
+git clone https://github.com/sarulab-speech/AT-DIFFER.git
+cd AT-DIFFER
+```
+
+Then run the stages in order, starting each step from the root of the
+repository. The commands below are for the Baseline and Method 2. The README
+of each stage describes all options and the outputs, and those of finetune and
+inference also give example Slurm job scripts (`scripts/slurm/`).
 
 ### 1. Build the dataset
 
@@ -243,3 +261,16 @@ start their response with an empty thinking block, as in fine-tuning.
   year         = {2026},
 }
 ```
+
+## References
+
+[1] N. Yang, S. Yin, L.-C. Yang, B. Irvin, X. Quan, M. Stamenovic, and
+S. Zhang, "FSD50K-Solo: Automated Curation of Single-Source Sound Events,"
+Proc. European Signal Processing Conference (EUSIPCO), 2026.
+Paper URL: https://arxiv.org/abs/2605.13931,
+Dataset URL: https://doi.org/10.5281/zenodo.20403806
+
+[2] E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open
+Dataset of Human-Labeled Sound Events," IEEE/ACM Transactions on Audio,
+Speech, and Language Processing, vol. 30, pp. 829–852, 2022.
+Paper URL: https://doi.org/10.1109/TASLP.2021.3133208

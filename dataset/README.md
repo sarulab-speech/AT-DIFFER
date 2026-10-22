@@ -1,7 +1,8 @@
 # AT-DIFFER dataset
 
 This directory re-renders the AT-DIFFER dataset from the metadata bundled here
-(`metadata/`) and the audio of [FSD50K](https://zenodo.org/records/4060432).
+(`metadata/`) and the audio of [FSD50K](https://zenodo.org/records/4060432)
+[[1]](#references).
 The result is identical to the dataset used in the paper: the same audio–text
 pairs, difference captions, and labels for the train, val, and test splits.
 
@@ -28,7 +29,7 @@ choices are made during re-rendering.
   ```
 
   Each directory should contain `<clip ID>.wav` files. The FSD50K label files
-  and FSD50K-Solo are not needed.
+  and FSD50K-Solo [[2]](#references) are not needed.
 
 ## Usage
 
@@ -136,3 +137,16 @@ uv run pytest
 
 The tests use synthetic signals and the bundled metadata only; FSD50K is not
 needed.
+
+## References
+
+[1] E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open
+Dataset of Human-Labeled Sound Events," IEEE/ACM Transactions on Audio,
+Speech, and Language Processing, vol. 30, pp. 829–852, 2022.
+Paper URL: https://doi.org/10.1109/TASLP.2021.3133208
+
+[2] N. Yang, S. Yin, L.-C. Yang, B. Irvin, X. Quan, M. Stamenovic, and
+S. Zhang, "FSD50K-Solo: Automated Curation of Single-Source Sound Events,"
+Proc. European Signal Processing Conference (EUSIPCO), 2026.
+Paper URL: https://arxiv.org/abs/2605.13931,
+Dataset URL: https://doi.org/10.5281/zenodo.20403806
